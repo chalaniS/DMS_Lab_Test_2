@@ -1,0 +1,34 @@
+------------1--------------------
+--1
+select s.sname
+from student_K s, grades_K g
+where s.sid= g.sid and s.gpa > 3.0 AND g.grade = 'A' AND cid ='DBII'
+
+---1---Another way----
+SELECT  sname
+FROM student_K 
+WHERE gpa > 3.0 AND  sid = ANY (
+							SELECT sid
+							FROM grades_K
+							WHERE grade = 'A' AND cid ='DBII'
+);
+
+--2
+select s.sname, count(g.sid) as 'completed#' 
+from student_K s left outer join grades_K g on s.sid = g.sid 
+where s.sname like '%i%'
+group by s.sname;
+
+
+--3
+select batch, avg(gpa) AS Highest_avg
+from student_K 
+group by batch 
+having avg(gpa) >= all
+			(
+			select avg(gpa) 
+			from student_K 
+			group by batch
+);
+
+
