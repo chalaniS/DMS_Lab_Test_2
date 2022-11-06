@@ -1,11 +1,11 @@
 --print the name and the phone number of the people whose phone number contain digits '123' anywhere in the phone number 
 select name,telephone
-from IT21174780_Person_B2
+from Person_B2
 where telephone LIKE '%123%'
 
 --for all person who have account in bank branch ,print the person number and total amount in the bank account 
 select p.telephone ,sum(a.balance)
-from IT21174780_Person_B2 p, IT21174780_CustomerAccounts_B2 ca,IT21174780_Account_B2 a
+from Person_B2 p, CustomerAccounts_B2 ca, Account_B2 a
 where p.personNo=ca.personNo 
 group by p.telephone
 
@@ -13,18 +13,18 @@ group by p.telephone
 --print the person number of person who have bank balnce (in all his/her account ) that excced the total amount of his/her loans
 
 select p.personNo
-from IT21174780_Person_B2 p, IT21174780_CustomerAccounts_B2 ca,IT21174780_Account_B2 a
+from Person_B2 p, CustomerAccounts_B2 ca, Account_B2 a
 where p.personNo=ca.personNo 
 group by p.telephone,p.personNo
 having sum(a.balance) > ALL(select sum(l.value)
-                            from IT21174780_Person_B2 p ,IT21174780_Borrower_B2 b ,IT21174780_Loan_B2 l
+                            from Person_B2 p , Borrower_B2 b , Loan_B2 l
 							group by p.personNo)
 
 
 select p.personNo 
-from IT21174780_Person_B2 p, IT21174780_Borrower_B2 b,IT21174780_Loan_B2 l
+from Person_B2 p, Borrower_B2 b,Loan_B2 l
 where p.personNo=b.personNo and l.loanNo=b.loanNo and l.value< (select sum(balance)
-                                                                from IT21174780_Account_B2)
+                                                                from Account_B2)
 
 select * 
 from IT21174780_Person_B2
@@ -32,30 +32,30 @@ from IT21174780_Person_B2
 --For all person who havi taken a loan print the person number and total amount borrowed
 
 select  p.telephone ,sum(l.value)
-from IT21174780_Person_B2 p,IT21174780_Borrower_B2 b,IT21174780_Loan_B2 l
+from Person_B2 p,Borrower_B2 b,Loan_B2 l
 where p.personNo=b.personNo AND b.loanNo=l.loanNo
 group by p.telephone
 
 --Find the name and the phone number of the person who has tken lageest loan 
 
 select  p.name,p.telephone
-from IT21174780_Person_B2 p ,IT21174780_Borrower_B2 b,IT21174780_Loan_B2 l
+from Person_B2 p , Borrower_B2 b, Loan_B2 l
 where p.personNo=b.personNo AND b.loanNo=l.loanNo AND l.value in (select max(value)
-                      from IT21174780_Loan_B2 )
+                      from Loan_B2 )
 
 
 --print the name of all person who have taken loans from the bank but does not have an account in the bank 
 
 select p.name
-from IT21174780_Person_B2 p, IT21174780_CustomerAccounts_B2 c, IT21174780_Borrower_B2 b
-where p.personNo=b.personNo and p.personNo=b.personNo and  accno not in (select accno from IT21174780_CustomerAccounts_B2)
+from Person_B2 p, CustomerAccounts_B2 c, Borrower_B2 b
+where p.personNo=b.personNo and p.personNo=b.personNo and  accno not in (select accno from CustomerAccounts_B2)
 
 select p.name
-from IT21174780_Person_B2 p, IT21174780_Loan_B2 l ,IT21174780_Borrower_B2 b
-where p.personNo = b.personNo and l.loanNo = b.loanNo and not exists (select branchNo from IT21174780_Loan_B2)
+from Person_B2 p, Loan_B2 l , Borrower_B2 b
+where p.personNo = b.personNo and l.loanNo = b.loanNo and not exists (select branchNo from Loan_B2)
 
 select p.name 
-from IT21174780_Borrower_B2 b,IT21174780_Person_B2 p,IT21174780_Loan_B2
+from Borrower_B2 b, Person_B2 p, Loan_B2
 where p.personNo=b.personNo AND b.loanNo=b.loanNo AND p.personNo NOT IN ( select p.personNo
-                                                                          from IT21174780_Person_B2 p,IT21174780_CustomerAccounts_B2 ca ,IT21174780_Account_B2 a
+                                                                          from  Person_B2 p, CustomerAccounts_B2 ca , Account_B2 a
 																		  where p.personNo=ca.personNo AND ca.accNo=a.accNo )
