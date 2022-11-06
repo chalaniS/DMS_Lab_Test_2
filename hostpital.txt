@@ -1,0 +1,20 @@
+--1
+select d.dname , d.regNo
+from doctor_B1 d , visits_B1 v
+where d.regNo = v.regNo AND v.pnum = 'p101' AND d.specialty = 'surgeon'
+
+--2
+select distinct d.dname 
+from doctor_B1 d , visits_B1 v
+where d.regNo = v.regNo AND d.specialty = 'physician' AND v.diagnosis = 'operation'
+
+--3
+select d.dname,count(d.regNo)
+from doctor_B1 d , visits_B1 v
+where d.regNo = v.regNo
+group by d.dname 
+having count(d.regNo)>=all (select count(d.regNo)
+                            from doctor_B1 d , visits_B1 v
+                            where d.regNo = v.regNo
+                            group by d.dname 
+                            )

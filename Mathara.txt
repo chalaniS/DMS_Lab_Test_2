@@ -1,0 +1,37 @@
+-------------------4----------------
+--1
+SELECT sname, gpa
+FROM student_K
+WHERE gpa = ANY (
+				SELECT MAX(gpa)
+				FROM student_K
+				WHERE address like '%Matara%'
+
+);
+
+-----2----
+select s.sname, count(g.sid) 
+from student_K s, grades_K g 
+where s.sid = g.sid 
+group by s.sname
+having count(g.sid) > 2;
+
+---Another way---
+SELECT s.sname,  count(g.grade) AS No_Of_Courses
+FROM student_K s , grades_K g
+where s.sid = g.sid
+group by s.sid, s.sname
+having COUNT(g.grade) > 2;
+
+
+--3
+select s.sname, count(g.sid) 
+from student_K s, grades_K g 
+where s.sid = g.sid and g.grade='B' and s.sname in (
+				select s.sname 
+				from student_K s, grades_K g 
+				where s.sid = g.sid 
+				group by s.sname
+				having count(g.sid) > 2
+)
+group by s.sname;
